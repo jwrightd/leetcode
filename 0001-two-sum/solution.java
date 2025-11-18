@@ -3,9 +3,9 @@ class Solution {
 
         for (int i = 0; i < nums.length; i ++)
         {
-            for (int x = 1; x < nums.length; x ++)
+            for (int x = i + 1; x < nums.length; x ++)
             {
-                if (i != x && nums[i] + nums[x] == target)
+                if (nums[i] + nums[x] == target)
                 {
                     int[] twosum = {i, x};
                     return twosum;
