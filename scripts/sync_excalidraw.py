@@ -144,6 +144,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Show what would be copied without writing files.",
     )
+    parser.add_argument(
+        "--allow-unmatched",
+        action="store_true",
+        help="Exit successfully even when some inbox files do not match existing problem folders.",
+    )
     return parser.parse_args()
 
 
@@ -189,7 +194,7 @@ def main() -> int:
     else:
         print(f"\nCopied {copied} drawing(s).")
 
-    return 1 if unmatched else 0
+    return 0 if args.allow_unmatched else 1 if unmatched else 0
 
 
 if __name__ == "__main__":

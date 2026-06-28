@@ -10,8 +10,9 @@ Drop Excalidraw drawings directly into the matching LeetCode problem folder:
 0001-two-sum/two-sum.excalidraw.png
 ```
 
-The Codex local automation checks this repo hourly. When it sees changed drawing
-files inside problem folders, it commits and pushes them with:
+The Codex local automation checks this repo hourly. It first tries to copy
+matching drawings from `excalidraw-inbox/` into problem folders, then commits
+and pushes changed drawing files inside problem folders with:
 
 ```text
 Sync Excalidraw notes
@@ -66,6 +67,13 @@ the copied files in the problem folders.
 
 The auto-push script only stages drawing files that are already inside LeetCode
 problem folders. It leaves solution code and unrelated local changes alone.
+
+The hourly automation runs both steps:
+
+```sh
+python3 scripts/sync_excalidraw.py --allow-unmatched
+python3 scripts/auto_push_excalidraw.py
+```
 
 Run it once manually with:
 
