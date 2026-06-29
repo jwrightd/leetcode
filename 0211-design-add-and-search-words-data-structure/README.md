@@ -9,6 +9,10 @@
 </ul>
 
 <p>&nbsp;</p>
+<h2>Excalidraw Notes</h2>
+<p><img src="211.excalidraw.png" alt="Excalidraw notes for Design Add and Search Words Data Structure" /></p>
+
+<p>&nbsp;</p>
 <p><strong class="example">Example:</strong></p>
 
 <pre>
