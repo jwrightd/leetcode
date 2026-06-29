@@ -13,6 +13,10 @@ Drop Excalidraw drawings directly into the matching LeetCode problem folder:
 Supported file endings are `.excalidraw`, `.excalidraw.png`,
 `.excalidraw.svg`, `.png`, and `.svg`.
 
+Raw `.excalidraw` files are editable JSON files, so GitHub displays them as
+code. The manual scripts generate a `.excalidraw.png` preview beside each raw
+file so GitHub can display the drawing.
+
 ## Inbox Flow
 
 If you prefer exporting into one staging folder first, save or export Excalidraw
@@ -57,6 +61,9 @@ to sync and push drawings:
 python3 scripts/sync_excalidraw.py --allow-unmatched
 python3 scripts/auto_push_excalidraw.py
 ```
+
+That second command also renders missing or outdated PNG previews for raw
+`.excalidraw` files already inside problem folders.
 
 The auto-push script only stages drawing files that are already inside LeetCode
 problem folders. It leaves solution code and unrelated local changes alone.

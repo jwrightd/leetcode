@@ -43,6 +43,31 @@ def relative(path: Path) -> str:
     return str(path.relative_to(REPO_ROOT))
 
 
+def render_png_previews() -> None:
+    renderer = REPO_ROOT / "scripts" / "render_excalidraw_png.js"
+    for problem_dir in REPO_ROOT.iterdir():
+        if not is_problem_dir(problem_dir):
+            continue
+        for path in sorted(problem_dir.iterdir()):
+            if path.is_file() and path.name.lower().endswith(".excalidraw"):
+                output = Path(f"{path}.png")
+                if output.exists() and output.stat().st_mtime >= path.stat().st_mtime:
+                    continue
+                result = run(
+                    ["node", str(renderer), str(path), str(output)],
+                    check=False,
+                )
+                print(result.stdout, end="")
+                if result.returncode != 0:
+                    print(result.stderr, end="", file=sys.stderr)
+                    raise subprocess.CalledProcessError(
+                        result.returncode,
+                        result.args,
+                        output=result.stdout,
+                        stderr=result.stderr,
+                    )
+
+
 def candidate_files() -> list[str]:
     files: set[str] = set()
 
@@ -101,6 +126,8 @@ def main() -> int:
     if branch is None:
         print("Not on a branch; skipping Excalidraw auto-push.", file=sys.stderr)
         return 1
+
+    render_png_previews()
 
     candidates = candidate_files()
     drawings_changed = changed_paths(candidates)
