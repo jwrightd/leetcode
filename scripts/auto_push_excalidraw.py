@@ -17,6 +17,7 @@ SUPPORTED_SUFFIXES = (
     ".png",
     ".svg",
 )
+LEETCODE_COMMIT_PREFIX = "Sync LeetCode submission Runtime - "
 
 
 def run(args: list[str], check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -115,6 +116,43 @@ def all_changed_paths() -> list[str]:
     return [entry[3:] for entry in entries if entry]
 
 
+def problem_dir_for_path(path: str) -> str | None:
+    first_part = path.split("/", 1)[0]
+    if is_problem_dir(REPO_ROOT / first_part):
+        return first_part
+    return None
+
+
+def group_by_problem(paths: list[str]) -> dict[str, list[str]]:
+    groups: dict[str, list[str]] = {}
+    for path in paths:
+        problem_dir = problem_dir_for_path(path)
+        if problem_dir is None:
+            continue
+        groups.setdefault(problem_dir, []).append(path)
+    return groups
+
+
+def latest_leetcode_commit_message(problem_dir: str) -> str:
+    result = run(
+        [
+            "git",
+            "log",
+            "--format=%s",
+            "--grep",
+            f"^{LEETCODE_COMMIT_PREFIX}",
+            "--",
+            problem_dir,
+        ],
+        check=False,
+    )
+    for line in result.stdout.splitlines():
+        message = line.strip()
+        if message.startswith(LEETCODE_COMMIT_PREFIX):
+            return f"{message} + Excalidraw notes"
+    return "Sync Excalidraw notes"
+
+
 def current_branch() -> str | None:
     result = run(["git", "branch", "--show-current"], check=False)
     branch = result.stdout.strip()
@@ -139,16 +177,22 @@ def main() -> int:
     drawing_changes = set(drawings_changed)
     unrelated_changes = sorted(all_changes - drawing_changes)
 
-    run(["git", "add", "--all", "--", *drawings_changed])
-    diff = run(["git", "diff", "--cached", "--quiet"], check=False)
-    if diff.returncode == 0:
+    committed = 0
+    for problem_dir, paths in group_by_problem(drawings_changed).items():
+        run(["git", "add", "--all", "--", *paths])
+        diff = run(["git", "diff", "--cached", "--quiet"], check=False)
+        if diff.returncode == 0:
+            continue
+        message = latest_leetcode_commit_message(problem_dir)
+        run(["git", "commit", "-m", message])
+        print(f"Committed Excalidraw notes for {problem_dir}: {message}")
+        committed += 1
+
+    if committed == 0:
         print("No staged Excalidraw drawing changes to push.")
         return 0
 
-    run(["git", "commit", "-m", "Sync Excalidraw notes"])
-
     if unrelated_changes:
-        print("Committed Excalidraw notes.")
         print("Skipping rebase because unrelated local changes are present:")
         for path in unrelated_changes:
             print(f"  {path}")

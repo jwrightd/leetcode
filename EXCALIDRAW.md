@@ -67,3 +67,6 @@ That second command also renders missing or outdated PNG previews for raw
 
 The auto-push script only stages drawing files that are already inside LeetCode
 problem folders. It leaves solution code and unrelated local changes alone.
+When it commits drawing changes, it reuses that problem folder's latest
+LeetCode runtime/memory commit message and appends `+ Excalidraw notes`, so the
+GitHub folder list still shows the runtime and memory percentages.
