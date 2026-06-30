@@ -1,6 +1,6 @@
 # Excalidraw Notes
 
-## Automatic Flow
+## Manual Flow
 
 Drop Excalidraw drawings directly into the matching LeetCode problem folder:
 
@@ -10,16 +10,12 @@ Drop Excalidraw drawings directly into the matching LeetCode problem folder:
 0001-two-sum/two-sum.excalidraw.png
 ```
 
-The Codex local automation checks this repo hourly. It first tries to copy
-matching drawings from `excalidraw-inbox/` into problem folders, then commits
-and pushes changed drawing files inside problem folders with:
-
-```text
-Sync Excalidraw notes
-```
-
 Supported file endings are `.excalidraw`, `.excalidraw.png`,
 `.excalidraw.svg`, `.png`, and `.svg`.
+
+Raw `.excalidraw` files are editable JSON files, so GitHub displays them as
+code. The manual scripts generate a `.excalidraw.png` preview beside each raw
+file so GitHub can display the drawing.
 
 ## Inbox Flow
 
@@ -58,27 +54,19 @@ By default the original file name is preserved in the problem folder. Use
 `--dest-name diagram.excalidraw` if you want every raw Excalidraw file to land
 with the same name.
 
-The GitHub Actions workflow also runs this script before syncing LeetCode. That
-is useful only for drawing files that already exist in the workflow checkout.
-For normal local Excalidraw exports, run the script locally first, then commit
-the copied files in the problem folders.
-
-## Local Auto-Push
-
-The auto-push script only stages drawing files that are already inside LeetCode
-problem folders. It leaves solution code and unrelated local changes alone.
-
-The hourly automation runs both steps:
+There is no active Excalidraw automation. Run the scripts manually when you want
+to sync and push drawings:
 
 ```sh
 python3 scripts/sync_excalidraw.py --allow-unmatched
 python3 scripts/auto_push_excalidraw.py
 ```
 
-Run it once manually with:
+That second command also renders missing or outdated PNG previews for raw
+`.excalidraw` files already inside problem folders.
 
-```sh
-python3 scripts/auto_push_excalidraw.py
-```
-
-The active Codex automation is named `Auto-push LeetCode Excalidraw notes`.
+The auto-push script only stages drawing files that are already inside LeetCode
+problem folders. It leaves solution code and unrelated local changes alone.
+When it commits drawing changes, it reuses that problem folder's latest
+LeetCode runtime/memory commit message and appends `+ Excalidraw notes`, so the
+GitHub folder list still shows the runtime and memory percentages.

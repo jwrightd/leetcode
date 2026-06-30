@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import re
 import shutil
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -118,6 +119,22 @@ def copy_drawing(
     return f"copied {source} -> {target}"
 
 
+def render_png_preview(repo_root: Path, excalidraw_file: Path, dry_run: bool) -> str:
+    output = Path(f"{excalidraw_file}.png")
+    command = [
+        "node",
+        str(repo_root / "scripts" / "render_excalidraw_png.js"),
+        str(excalidraw_file),
+        str(output),
+    ]
+
+    if dry_run:
+        return f"would render {excalidraw_file} -> {output}"
+
+    subprocess.run(command, cwd=repo_root, check=True)
+    return f"rendered {excalidraw_file} -> {output}"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Copy Excalidraw files into matching LeetCode solution folders."
@@ -178,6 +195,12 @@ def main() -> int:
             continue
 
         print(copy_drawing(source, suffix, problem, args.dest_name, args.dry_run))
+        target_name = args.dest_name if args.dest_name is not None else source.name
+        if args.dest_name is not None and not target_name.lower().endswith(suffix):
+            target_name = f"{target_name}{suffix}"
+        target = problem.path / target_name
+        if suffix == ".excalidraw":
+            print(render_png_preview(repo_root, target, args.dry_run))
         copied += 1
 
     if unmatched:

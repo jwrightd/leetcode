@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "render:excalidraw": "node scripts/render_excalidraw_png.js"
+  },
+  "dependencies": {
+    "sharp": "0.35.2"
+  }
+}

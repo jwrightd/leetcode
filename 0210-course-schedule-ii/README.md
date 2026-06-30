@@ -4,6 +4,10 @@
 	<li>For example, the pair <code>[0, 1]</code>, indicates that to take course <code>0</code> you have to first take course <code>1</code>.</li>
 </ul>
 
+<p>&nbsp;</p>
+<h2>Excalidraw Notes</h2>
+<p><img src="210.excalidraw.png" alt="Excalidraw notes for Course Schedule II" /></p>
+
 <p>Return <em>the ordering of courses you should take to finish all courses</em>. If there are many valid answers, return <strong>any</strong> of them. If it is impossible to finish all courses, return <strong>an empty array</strong>.</p>
 
 <p>&nbsp;</p>
