@@ -5,21 +5,21 @@ class Solution(object):
         :type k: int
         :rtype: List[int]
         """
-        #better than nlogn --> so we use pq i think
-        #heapify in n
-        #we pop k, so thats klogn, and n + klogn is less than nlogn
         import heapq
-        #setup dict o(N)
-        freq = dict()
+        heap = []
+        freq = {}
         for i in nums:
-            freq[i] = 1 if i not in freq else freq[i] + 1
-        num_freqs = [(-freq[i], i) for i in freq]
-
-        heapq.heapify(num_freqs)
-
+            if i in freq:
+                freq[i] += 1
+            else:
+                freq[i] = 1
+        
+        for i in freq:
+            heapq.heappush(heap, (-freq[i], i))
         output = []
         for i in range(k):
-            frequency, val = heapq.heappop(num_freqs)
-            output.append(val)
+            val, i = heapq.heappop(heap)
+            output.append(i)
         return output
+
         
