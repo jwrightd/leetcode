@@ -4,11 +4,10 @@ class Solution(object):
         :type n: int
         :rtype: int
         """
-        #bit trick, then shift
+        # num set bits
+        # can we check  if dvisible by 2 and then //2
         count = 0
         while n > 0:
-            n = n & (n - 1)
-            count += 1
+            count = count + 1 if n % 2 else count
+            n /= 2
         return count
-
-        
