@@ -7,36 +7,48 @@ class Solution(object):
         :type k: int
         :rtype: List[int]
         """
-        # probably want to do in O(N)
         lenS = len(s)
         lenA = len(a)
         lenB = len(b)
+        # i is beautiful if it starts an instance of a in s
+        # there is an instnce of b in s that starts within k units of i
+        # algo: get i, j candidates
+        # two pointers, one for each array of candidates
+        # iterate through i candidates, increment j candidates if gap is too large
 
-        i_idx = []
-        j_idx = []
+        i_candidates = []
+        j_candidates = []
 
-        output = []
-        n = lenS - lenA + 1
-        m = lenS - lenB + 1
-
-        for i in range(n):
+        for i in range(lenS - lenA + 1):
             if s[i:i + lenA] == a:
-                i_idx.append(i)
-        for j in range(m):
-            if s[j:j + lenB] == b:
-                j_idx.append(j)
-       # print(n)
-        #exit()
+                i_candidates.append(i)
+        
+        for i in range(lenS - lenB + 1):
+            if s[i:i + lenB] == b:
+                j_candidates.append(i)
+        
+        i_ptr = 0
+        j_ptr = 0
+        N, M = len(i_candidates), len(j_candidates)
 
-        b_ptr = 0
-        length = len(j_idx)
-        for idx in i_idx:
-            while b_ptr < length and j_idx[b_ptr] < idx - k:
-                b_ptr += 1
-            if b_ptr < length and j_idx[b_ptr] <= idx + k:
-                output.append(idx)
+        beautiful_indices = []
 
-                    
-        return output
+        while i_ptr < N and j_ptr < M:
+            curr_candidate = i_candidates[i_ptr]
+            if abs(j_candidates[j_ptr] - curr_candidate) <= k:
+                beautiful_indices.append(curr_candidate)
+                i_ptr += 1
+            else:
+                if curr_candidate - j_candidates[j_ptr] > k:
+                    j_ptr += 1
+                else:
+                    i_ptr += 1
 
+        
+
+
+
+
+
+        return beautiful_indices
         
